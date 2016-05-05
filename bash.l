@@ -10,11 +10,13 @@
 
 %%
 
-[ \t]		; 
+[\t]		{return T_NBSP;}
+"ps"		{return T_PS;}
 "ls"		{return T_LS;}
-[a-z]+	 	{yylval.a = yytext; return T_PARAM;}
-\n		{return T_NEWLINE;}
+"cd"		{return T_CD;}
+"ipconfig"  {return T_IP_CONFIG;}
 "exit"		{return T_QUIT;}
 "quit"		{return T_QUIT;}
-
+[a-zA-Z0-9]+	 	{yylval.a = yytext; return T_PARAM;}
+\n			{return T_NEWLINE;}
 %%
