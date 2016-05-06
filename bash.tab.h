@@ -52,7 +52,10 @@ extern int yydebug;
     T_LS = 262,
     T_CD = 263,
     T_NBSP = 264,
-    T_IP_CONFIG = 265
+    T_IP_CONFIG = 265,
+    T_MKDIR = 266,
+    T_RMDIR = 267,
+    NUM = 268
   };
 #endif
 
@@ -64,8 +67,9 @@ union YYSTYPE
 #line 13 "bash.y" /* yacc.c:1909  */
 
 	char *a;
+	int number;
 
-#line 69 "bash.tab.h" /* yacc.c:1909  */
+#line 73 "bash.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

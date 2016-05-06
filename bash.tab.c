@@ -116,7 +116,10 @@ extern int yydebug;
     T_LS = 262,
     T_CD = 263,
     T_NBSP = 264,
-    T_IP_CONFIG = 265
+    T_IP_CONFIG = 265,
+    T_MKDIR = 266,
+    T_RMDIR = 267,
+    NUM = 268
   };
 #endif
 
@@ -128,8 +131,9 @@ union YYSTYPE
 #line 13 "bash.y" /* yacc.c:355  */
 
 	char *a;
+	int number;
 
-#line 133 "bash.tab.c" /* yacc.c:355  */
+#line 137 "bash.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -146,7 +150,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 150 "bash.tab.c" /* yacc.c:358  */
+#line 154 "bash.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -388,21 +392,21 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  2
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   11
+#define YYLAST   28
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  11
+#define YYNTOKENS  18
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  3
+#define YYNNTS  4
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  9
+#define YYNRULES  17
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  15
+#define YYNSTATES  31
 
 /* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
    by yylex, with out-of-bounds checking.  */
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   265
+#define YYMAXUTOK   268
 
 #define YYTRANSLATE(YYX)                                                \
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
@@ -415,7 +419,7 @@ static const yytype_uint8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,    16,    14,     2,    15,     2,    17,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -437,14 +441,15 @@ static const yytype_uint8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,     7,     8,     9,    10
+       5,     6,     7,     8,     9,    10,    11,    12,    13
 };
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    30,    30,    31,    34,    35,    36,    37,    38,    39
+       0,    35,    35,    36,    40,    41,    42,    43,    44,    45,
+      46,    47,    48,    51,    52,    53,    54,    55
 };
 #endif
 
@@ -454,7 +459,8 @@ static const yytype_uint8 yyrline[] =
 static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "T_PARAM", "T_NEWLINE", "T_QUIT", "T_PS",
-  "T_LS", "T_CD", "T_NBSP", "T_IP_CONFIG", "$accept", "bashing", "line", YY_NULLPTR
+  "T_LS", "T_CD", "T_NBSP", "T_IP_CONFIG", "T_MKDIR", "T_RMDIR", "NUM",
+  "'+'", "'-'", "'*'", "'/'", "$accept", "bashing", "line", "expression", YY_NULLPTR
 };
 #endif
 
@@ -464,14 +470,14 @@ static const char *const yytname[] =
 static const yytype_uint16 yytoknum[] =
 {
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-     265
+     265,   266,   267,   268,    43,    45,    42,    47
 };
 # endif
 
-#define YYPACT_NINF -4
+#define YYPACT_NINF -11
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-4)))
+  (!!((Yystate) == (-11)))
 
 #define YYTABLE_NINF -1
 
@@ -482,8 +488,10 @@ static const yytype_uint16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      -4,     0,    -4,    -4,    -3,    -2,    -1,     6,    -4,    -4,
-      -4,    -4,    -4,     7,    -4
+     -11,     0,   -11,   -11,    -3,    -2,     5,    11,   -11,    20,
+      21,   -11,   -11,     1,   -11,   -11,   -11,    22,    23,    24,
+     -10,   -10,   -10,   -10,   -11,   -11,   -11,     1,     1,     1,
+       1
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -491,20 +499,22 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       2,     0,     1,     4,     0,     0,     0,     0,     7,     3,
-       8,     5,     6,     0,     9
+       2,     0,     1,     4,     0,     0,     0,     0,     7,     0,
+       0,    13,     3,    12,     8,     5,     6,     0,     0,     0,
+       0,     0,     0,     0,     9,    10,    11,    14,    15,    16,
+      17
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -4,    -4,    -4
+     -11,   -11,   -11,    -1
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     1,     9
+      -1,     1,    12,    13
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -512,34 +522,40 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_uint8 yytable[] =
 {
-       2,    10,    11,    12,     3,     4,     5,     6,     7,    13,
-       8,    14
+       2,    14,    15,    11,     3,     4,     5,     6,     7,    16,
+       8,     9,    10,    11,    17,    20,    21,    22,    23,    27,
+      28,    29,    30,    18,    19,     0,    24,    25,    26
 };
 
-static const yytype_uint8 yycheck[] =
+static const yytype_int8 yycheck[] =
 {
-       0,     4,     4,     4,     4,     5,     6,     7,     8,     3,
-      10,     4
+       0,     4,     4,    13,     4,     5,     6,     7,     8,     4,
+      10,    11,    12,    13,     3,    14,    15,    16,    17,    20,
+      21,    22,    23,     3,     3,    -1,     4,     4,     4
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,    12,     0,     4,     5,     6,     7,     8,    10,    13,
-       4,     4,     4,     3,     4
+       0,    19,     0,     4,     5,     6,     7,     8,    10,    11,
+      12,    13,    20,    21,     4,     4,     4,     3,     3,     3,
+      14,    15,    16,    17,     4,     4,     4,    21,    21,    21,
+      21
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,    11,    12,    12,    13,    13,    13,    13,    13,    13
+       0,    18,    19,    19,    20,    20,    20,    20,    20,    20,
+      20,    20,    20,    21,    21,    21,    21,    21
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
-       0,     2,     0,     2,     1,     2,     2,     1,     2,     3
+       0,     2,     0,     2,     1,     2,     2,     1,     2,     3,
+       3,     3,     1,     1,     3,     3,     3,     3
 };
 
 
@@ -1216,43 +1232,91 @@ yyreduce:
   switch (yyn)
     {
         case 3:
-#line 31 "bash.y" /* yacc.c:1646  */
+#line 36 "bash.y" /* yacc.c:1646  */
     { printf("BashWeninger >> "); }
-#line 1222 "bash.tab.c" /* yacc.c:1646  */
+#line 1238 "bash.tab.c" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 35 "bash.y" /* yacc.c:1646  */
+#line 41 "bash.y" /* yacc.c:1646  */
     { system("ps"); }
-#line 1228 "bash.tab.c" /* yacc.c:1646  */
+#line 1244 "bash.tab.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 36 "bash.y" /* yacc.c:1646  */
+#line 42 "bash.y" /* yacc.c:1646  */
     { system("ls"); }
-#line 1234 "bash.tab.c" /* yacc.c:1646  */
+#line 1250 "bash.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 37 "bash.y" /* yacc.c:1646  */
+#line 43 "bash.y" /* yacc.c:1646  */
     {system("ipconfig");}
-#line 1240 "bash.tab.c" /* yacc.c:1646  */
+#line 1256 "bash.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 38 "bash.y" /* yacc.c:1646  */
+#line 44 "bash.y" /* yacc.c:1646  */
     { printf("bye!\n"); exit(0); }
-#line 1246 "bash.tab.c" /* yacc.c:1646  */
+#line 1262 "bash.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 39 "bash.y" /* yacc.c:1646  */
+#line 45 "bash.y" /* yacc.c:1646  */
     {chdir(yylval.a);}
-#line 1252 "bash.tab.c" /* yacc.c:1646  */
+#line 1268 "bash.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 10:
+#line 46 "bash.y" /* yacc.c:1646  */
+    {char buf[60]; sprintf(buf, "mkdir %s", yylval.a); system(buf);}
+#line 1274 "bash.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 11:
+#line 47 "bash.y" /* yacc.c:1646  */
+    {char buf[60]; sprintf(buf, "rmdir %s", yylval.a); system(buf);}
+#line 1280 "bash.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 12:
+#line 48 "bash.y" /* yacc.c:1646  */
+    {printf("%d\n", (yyvsp[0].number));}
+#line 1286 "bash.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 13:
+#line 51 "bash.y" /* yacc.c:1646  */
+    {(yyval.number) = (yyvsp[0].number);}
+#line 1292 "bash.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 14:
+#line 52 "bash.y" /* yacc.c:1646  */
+    {(yyval.number) = (yyvsp[-2].number) + (yyvsp[0].number);}
+#line 1298 "bash.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 15:
+#line 53 "bash.y" /* yacc.c:1646  */
+    {(yyval.number) = (yyvsp[-2].number) - (yyvsp[0].number);}
+#line 1304 "bash.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 16:
+#line 54 "bash.y" /* yacc.c:1646  */
+    {(yyval.number) = (yyvsp[-2].number) * (yyvsp[0].number);}
+#line 1310 "bash.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 17:
+#line 55 "bash.y" /* yacc.c:1646  */
+    {(yyval.number) = (yyvsp[-2].number) / (yyvsp[0].number);}
+#line 1316 "bash.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1256 "bash.tab.c" /* yacc.c:1646  */
+#line 1320 "bash.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1480,14 +1544,14 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 42 "bash.y" /* yacc.c:1906  */
+#line 58 "bash.y" /* yacc.c:1906  */
 
 
 int main() {
 	yyin = stdin;
-
-	do { 
 		printf("BashWeninger >> ");
+	do { 
+		
 		yyparse();
 	} while(!feof(yyin));
 
@@ -1495,6 +1559,5 @@ int main() {
 }
 
 void yyerror(const char* s) {
-	fprintf(stderr, "Parse error: %s\n", s);
-	exit(1);
+	fprintf(stderr, "Comando invalido\n");
 }

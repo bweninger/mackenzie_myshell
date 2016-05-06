@@ -12,6 +12,7 @@ void yyerror(const char* s);
 
 %union {
 	char *a;
+	int number;
 }
 
 %token T_PARAM
@@ -21,14 +22,19 @@ void yyerror(const char* s);
 %token T_CD
 %token T_NBSP
 %token T_IP_CONFIG
+%token T_MKDIR
+%token T_RMDIR
 
+%token <number> NUM
+%type <number> expression
 
 %start bashing
 
 %%
 
 bashing: 
-	   | bashing line { printf("BashWeninger >> "); }
+	   | bashing line{ printf("BashWeninger >> "); }
+	   
 ;
 
 line: T_NEWLINE
@@ -37,15 +43,25 @@ line: T_NEWLINE
     | T_IP_CONFIG {system("ipconfig");}	
     | T_QUIT T_NEWLINE { printf("bye!\n"); exit(0); }
     | T_CD T_PARAM T_NEWLINE {chdir(yylval.a);}
+    | T_MKDIR T_PARAM T_NEWLINE {char buf[60]; sprintf(buf, "mkdir %s", yylval.a); system(buf);}
+    | T_RMDIR T_PARAM T_NEWLINE {char buf[60]; sprintf(buf, "rmdir %s", yylval.a); system(buf);}
+    | expression {printf("%d\n", $1);}
 ;
 
+expression: NUM {$$ = $1;}
+		| expression '+' expression {$$ = $1 + $3;}
+		| expression '-' expression {$$ = $1 - $3;}
+		| expression '*' expression {$$ = $1 * $3;}
+		| expression '/' expression {$$ = $1 / $3;}
+
+;
 %%
 
 int main() {
 	yyin = stdin;
-
-	do { 
 		printf("BashWeninger >> ");
+	do { 
+		
 		yyparse();
 	} while(!feof(yyin));
 
@@ -53,6 +69,5 @@ int main() {
 }
 
 void yyerror(const char* s) {
-	fprintf(stderr, "Parse error: %s\n", s);
-	exit(1);
+	fprintf(stderr, "Comando invalido\n");
 }
