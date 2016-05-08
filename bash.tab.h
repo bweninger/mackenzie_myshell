@@ -46,16 +46,20 @@ extern int yydebug;
   enum yytokentype
   {
     T_PARAM = 258,
-    T_NEWLINE = 259,
-    T_QUIT = 260,
-    T_PS = 261,
-    T_LS = 262,
-    T_CD = 263,
-    T_NBSP = 264,
-    T_IP_CONFIG = 265,
-    T_MKDIR = 266,
-    T_RMDIR = 267,
-    NUM = 268
+    T_FILENAME = 259,
+    T_NEWLINE = 260,
+    T_QUIT = 261,
+    T_PS = 262,
+    T_LS = 263,
+    T_CD = 264,
+    T_NBSP = 265,
+    T_IP_CONFIG = 266,
+    T_MKDIR = 267,
+    T_RMDIR = 268,
+    T_KILL = 269,
+    T_TOUCH = 270,
+    T_START = 271,
+    NUM = 272
   };
 #endif
 
@@ -69,7 +73,7 @@ union YYSTYPE
 	char *a;
 	int number;
 
-#line 73 "bash.tab.h" /* yacc.c:1909  */
+#line 77 "bash.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
