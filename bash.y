@@ -2,13 +2,18 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
 
 //extern int yylex();
 //extern int yyparse();
 extern FILE* yyin;
 
 void yyerror(const char* s);
+void cd(char* dest);
 %}
+
+
 
 %union {
 	char *a;
@@ -46,7 +51,7 @@ line: T_NEWLINE
     | T_LS T_NEWLINE { system("ls"); } 
     | T_IP_CONFIG {system("ipconfig");}	
     | T_QUIT T_NEWLINE { printf("bye!\n"); exit(0); }
-    | T_CD T_PARAM T_NEWLINE {system("getcwd");}
+    | T_CD T_PARAM T_NEWLINE {cd(yylval.a);}
     | T_MKDIR T_PARAM T_NEWLINE {char buf[60]; sprintf(buf, "mkdir %s", yylval.a); system(buf);}
     | T_RMDIR T_PARAM T_NEWLINE {char buf[60]; sprintf(buf, "rmdir %s", yylval.a); system(buf);}
     | T_KILL NUM T_NEWLINE {char buf[60]; sprintf(buf, "kill %d", yylval.number);system(buf); }
@@ -80,4 +85,13 @@ int main() {
 
 void yyerror(const char* s) {
 	fprintf(stderr, "Comando invalido\n");
+}
+
+void cd(char* dest) {
+	char buf[1024];
+	getcwd(buf, sizeof(buf));
+	strcat(buf, "/");
+	strcat(buf, dest);
+	printf("%s", buf);
+	chdir(buf);
 }
