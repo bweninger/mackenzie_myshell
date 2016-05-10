@@ -11,7 +11,7 @@
 
 %%
 
-[\t]		{return T_NBSP;}
+[ \t]		;
 "ps"		{return T_PS;}
 "ls"		{return T_LS;}
 "mkdir"		{return T_MKDIR;}

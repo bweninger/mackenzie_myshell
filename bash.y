@@ -42,7 +42,7 @@ void cd(char* dest);
 %%
 
 bashing: 
-	   | bashing line{ printf("BashWeninger >> "); }
+	   | bashing line{char buf[1024]; getcwd(buf, sizeof(buf)); printf("BashWeninger: %s>>", buf); }
 	   
 ;
 
@@ -59,7 +59,7 @@ line: T_NEWLINE
     | T_TOUCH T_FILENAME T_NEWLINE {char buf[60]; sprintf(buf, "touch %s", yylval.a); system(buf); printf("Arquivo %s criado.", yylval.a);}
     | T_START T_PARAM T_NEWLINE {char buf[60]; sprintf(buf, "exec ./%s", yylval.a); system(buf);}
     | T_START T_FILENAME T_NEWLINE {char buf[60]; sprintf(buf, "exec ./%s", yylval.a); system(buf);}
-    | expression {printf("%d\n", $1);}
+    | expression T_NEWLINE {printf("%d\n", $1);}
 
 ;
 
@@ -74,9 +74,8 @@ expression: NUM {$$ = $1;}
 
 int main() {
 	yyin = stdin;
-		printf("BashWeninger >> ");
-	do { 
-		
+		char buf[1024]; getcwd(buf, sizeof(buf)); printf("BashWeninger: %s>>", buf); 	
+	do { 		
 		yyparse();
 	} while(!feof(yyin));
 
@@ -92,6 +91,6 @@ void cd(char* dest) {
 	getcwd(buf, sizeof(buf));
 	strcat(buf, "/");
 	strcat(buf, dest);
-	printf("%s", buf);
+	printf("%s", buf); 	
 	chdir(buf);
 }
