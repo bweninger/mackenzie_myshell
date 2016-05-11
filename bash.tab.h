@@ -68,7 +68,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 18 "bash.y" /* yacc.c:1909  */
+#line 19 "bash.y" /* yacc.c:1909  */
 
 	char *a;
 	int number;

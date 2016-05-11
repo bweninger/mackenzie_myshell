@@ -25,7 +25,7 @@
 "start"		{return T_START;}
 [0-9]+		{yylval.number = atoi(yytext); return NUM;}
 [-*+/]		{ return *yytext; }
-[a-zA-Z0-9]+	 	{yylval.a = yytext; return T_PARAM;}
+[a-zA-Z0-9]+ {yylval.a = yytext; return T_PARAM;}
 [a-zA-Z0-9]+\.*[a-z]* {yylval.a = yytext; return T_FILENAME;}
 \n			{return T_NEWLINE;}
 %%

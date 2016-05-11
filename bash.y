@@ -11,6 +11,7 @@ extern FILE* yyin;
 
 void yyerror(const char* s);
 void cd(char* dest);
+char *trimwhitespace(char *str);
 %}
 
 
@@ -52,13 +53,13 @@ line: T_NEWLINE
     | T_IP_CONFIG {system("ipconfig");}	
     | T_QUIT T_NEWLINE { printf("bye!\n"); exit(0); }
     | T_CD T_PARAM T_NEWLINE {cd(yylval.a);}
-    | T_MKDIR T_PARAM T_NEWLINE {char buf[60]; sprintf(buf, "mkdir %s", yylval.a); system(buf);}
-    | T_RMDIR T_PARAM T_NEWLINE {char buf[60]; sprintf(buf, "rmdir %s", yylval.a); system(buf);}
+    | T_MKDIR T_PARAM T_NEWLINE {char buf[60]; sprintf(buf, "mkdir %s", trimwhitespace(yylval.a)); system(buf);}
+    | T_RMDIR T_PARAM T_NEWLINE {char buf[60]; sprintf(buf, "rmdir %s", trimwhitespace(yylval.a)); system(buf);}
     | T_KILL NUM T_NEWLINE {char buf[60]; sprintf(buf, "kill %d", yylval.number);system(buf); }
-    | T_TOUCH T_PARAM T_NEWLINE {char buf[60]; sprintf(buf, "touch %s", yylval.a); system(buf); printf("Arquivo %s criado.", yylval.a);}
-    | T_TOUCH T_FILENAME T_NEWLINE {char buf[60]; sprintf(buf, "touch %s", yylval.a); system(buf); printf("Arquivo %s criado.", yylval.a);}
-    | T_START T_PARAM T_NEWLINE {char buf[60]; sprintf(buf, "exec ./%s", yylval.a); system(buf);}
-    | T_START T_FILENAME T_NEWLINE {char buf[60]; sprintf(buf, "exec ./%s", yylval.a); system(buf);}
+    | T_TOUCH T_PARAM T_NEWLINE {char buf[60]; sprintf(buf, "touch %s", trimwhitespace(yylval.a)); system(buf); printf("Arquivo %s criado.", yylval.a);}
+    | T_TOUCH T_FILENAME T_NEWLINE {char buf[60]; sprintf(buf, "touch %s", trimwhitespace(yylval.a)); system(buf); printf("Arquivo %s criado.", yylval.a);}
+    | T_START T_PARAM T_NEWLINE {char buf[60]; sprintf(buf, "exec ./%s", trimwhitespace(yylval.a)); system(buf);}
+    | T_START T_FILENAME T_NEWLINE {char buf[60]; sprintf(buf, "exec ./%s", trimwhitespace(yylval.a)); system(buf);}
     | expression T_NEWLINE {printf("%d\n", $1);}
 
 ;
@@ -90,7 +91,24 @@ void cd(char* dest) {
 	char buf[1024];
 	getcwd(buf, sizeof(buf));
 	strcat(buf, "/");
-	strcat(buf, dest);
-	printf("%s", buf); 	
-	chdir(buf);
+	strcat(buf, dest);	
+	printf("%s", buf);
+	chdir(trimwhitespace(buf));
+}
+
+char *trimwhitespace(char *str)
+{
+  char *end;
+
+  while(isspace(*str)) str++;
+
+  if(*str == 0)  // All spaces?
+    return str;
+
+  end = str + strlen(str) - 1;
+  while(end > str && isspace(*end)) end--;
+
+  *(end+1) = 0;
+
+  return str;
 }
